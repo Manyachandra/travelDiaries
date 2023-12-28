@@ -1,4 +1,4 @@
-x# Travel Diaries
+# Travel Diaries
 
 React is a JavaScript library for building user interfaces.
 
