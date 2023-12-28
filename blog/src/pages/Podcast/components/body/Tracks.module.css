@@ -1,0 +1,50 @@
+.bottom{
+    background-color: black;
+    height: 30px;
+}
+
+.trck {
+    display: flex;
+    color: #FFF;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0%;
+}
+
+.playbtn {
+    display: flex;
+    margin: 0 30px;
+    right: 140px;
+    position: absolute;
+    padding: 5px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background-color: black;
+    color: #FFF;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.cplayerdetails{
+    display: flex;
+}
+
+.detailstitle {
+    color: #EEE;
+    font-size: 14px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(255,255,255,0.4);
+    text-align: center;
+    margin-right: 10px;
+    position: absolute;
+    left: 300px;
+}
+
+.detailsartist {
+    margin-top: 16px;
+    color: #AAA;
+    font-size: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(255,255,255,0.4);
+    text-align: left;
+}

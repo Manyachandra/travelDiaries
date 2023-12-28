@@ -1,0 +1,245 @@
+.container {
+    margin: 0;
+    padding: 10vh;
+    height: 100%;
+    box-sizing: border-box;
+    font-family: "Fira Sans", sans-serif;
+    background-color: black;
+}
+
+.App {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+}
+
+.cplayer {
+    display: block;
+    background: rgb(37,19,86);
+    background: linear-gradient(180deg, rgba(37,19,86,1) 85%, rgba(84,15,160,1) 100%);    
+    width: 30vw;
+    height: 85vh;
+    margin: 0px auto;
+    padding: 10px;
+    border-radius: 16px;
+   
+}
+
+.cplayer > h4 {
+    color: #FFF;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-align: center;
+}
+
+.cplayer > p {
+    color: #AAA;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.cplayer > p span {
+    font-weight: 400;
+}
+
+.detailsimg {
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.detailsimg img {
+    display: block;
+    margin: 50px auto;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 50%;
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.8), -6px -6px 12px rgba(255, 255, 255, 0.4);
+}
+
+.cplayerdetails .detailsimg:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -25px;
+    left: -25px;
+    right: -25px;
+    bottom: -25px;
+    border-radius: 50%;
+    border: 3px dashed rgb(200,116,241);;
+}
+
+ .detailstitle {
+    color: #EEE;
+    font-size: 28px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(255,255,255,0.4);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.detailsartist {
+    color: #AAA;
+    font-size: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(255,255,255,0.4);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.cplayercontrols {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+ .playbtn {
+    display: flex;
+    margin: 0 30px;
+    padding: 20px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background: rgb(84,15,160);
+    background: linear-gradient(180deg, rgba(84,15,160,1) 5%, rgba(124,83,208,1) 100%);
+    color: #FFF;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px,rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+}
+
+.skipbtn {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: #7c53d0;
+    color: linear-gradient(180deg, rgba(84,15,160,1) 5%, rgba(124,83,208,1) 100%);
+    font-size: 18px;
+}
+
+.barss{
+    display: flex;
+}
+
+.currentTime,
+.duration {
+  font-family: monospace;
+  font-size: 13px;
+  color: #FFF;
+}
+.duration{
+    position: relative;
+    margin-left: 10px;
+}
+
+.currentTime {
+  margin-right: 10px;
+}
+
+.progressBar {
+  --bar-bg:  rgb(0, 0, 0);
+  --seek-before-width: 0;
+  --seek-before-color: rgb(200,116,241);
+  --knobby: rgb(195,81,255);
+  --selectedKnobby: #fff;
+
+  appearance: none;
+  background: var(--bar-bg);;
+  border-radius: 5px;
+  position: relative;
+  margin: 2px;
+  width: 40vh;
+  height: 8px;
+  outline: none;
+}
+
+/* progress bar - safari */
+.progressBar::-webkit-slider-runnable-track {
+  background: var(--bar-bg);;
+  border-radius: 10px;
+  position: relative;
+  width: 40vh;
+  height: 8px;
+  outline: none;
+}
+
+/* progress bar - firefox */
+.progressBar::-moz-range-track {
+  background: var(--bar-bg);;
+  border-radius: 10px;
+  position: relative;
+  width: 40vh;
+  height: 8px;
+  outline: none;
+}
+
+.progressBar::-moz-focus-outer {
+  border: 0;
+}
+
+/* progress bar - chrome and safari */
+.progressBar::before {
+  content: '';
+  height: 8px;
+  width: var(--seek-before-width);
+  background-color: var(--seek-before-color);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+/* progress bar - firefox */
+.progressBar::-moz-range-progress {
+  background-color: var(--seek-before-color);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  height: 8px;
+}
+
+/* knobby - chrome and safari */
+.progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  border: none;
+  border: 2px solid #fff;
+  background-color: var(--knobby);
+  cursor: pointer;
+  position: relative;
+  margin: -2px 0 0 0;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+/* knobby while dragging - chrome and safari */
+.progressBar:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+  background: var(--selectedKnobby);
+}
+
+/* knobby - firefox */
+.progressBar::-moz-range-thumb {
+  height: 11px;
+  width: 15px;
+  border-radius: 50%;
+  border: transparent;
+  background-color: var(--knobby);
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+/* knobby while dragging - firefox */
+.progressBar:active::-moz-range-thumb {
+  transform: scale(1.2);
+  background: var(--selectedKnobby);
+}

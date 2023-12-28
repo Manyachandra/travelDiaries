@@ -1,0 +1,47 @@
+.TypeAheadDropDown{
+    width: 20vw;
+  
+ min-height: 36px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+   border-radius: 10px;
+
+    color: rgba(0, 0, 0, 0.73);
+   }
+    
+   .TypeAheadDropDown input{
+    width: 100%;
+   border-radius: 10px;
+
+    min-height: 36px;
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.73);
+    box-sizing: border-box;
+    outline: none;
+    
+   }
+   /* .TypeAheadDropDown ul::before{
+    content: '';
+   } */
+    
+   .TypeAheadDropDown ul{
+   list-style-type: none;
+   text-align: left;
+   margin: 0;
+   padding: 0;
+   border-top: 1px solid gray;
+   }
+    
+   .TypeAheadDropDown li{
+    padding: 10px 5px ;
+    cursor: pointer;
+   }
+    
+   .TypeAheadDropDown li:hover{
+    background: lightgray;
+    text-decoration: underline;
+   }
+    
+   

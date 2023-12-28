@@ -1,0 +1,28 @@
+
+.fullscreen{
+    margin-top: 500;
+    height: 100vh;
+    
+    background-color: black;
+}
+
+.left{
+    display: flex;
+    align-items: center;
+}
+.logo{
+        
+    height: 120px;
+   
+
+
+
+
+}
+.maintitle{
+    color:rgba(255, 30, 0, 0.4)
+}
+.listvideo{
+    display: flex;
+    flex-direction: column;
+}
