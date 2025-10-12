@@ -12,7 +12,7 @@ export const HomeDisplay = ({ index, url, img, desc, title, date, city, username
     const { user, dispatch } = useContext(Context);
     const [file, setFile] = useState(null);
 
-    const PF = "http://localhost:5000/images/"
+    const PF = "/images/"
 
 
     return (

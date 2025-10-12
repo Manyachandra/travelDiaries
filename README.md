@@ -1,75 +1,131 @@
 # Travel Diaries
 
-React is a JavaScript library for building user interfaces.
+Full‑stack MERN application for blogging, videos, and podcasts. The repo contains:
 
-* **Declarative:** React makes it painless to create interactive UIs. Design simple views for each state in your application, and React will efficiently update and render just the right components when your data changes. Declarative views make your code more predictable, simpler to understand, and easier to debug.
-* **Component-Based:** Build encapsulated components that manage their state, then compose them to make complex UIs. Since component logic is written in JavaScript instead of templates, you can easily pass rich data through your app and keep the state out of the DOM.
-* **Learn Once, Write Anywhere:** We don't make assumptions about the rest of your technology stack, so you can develop new features in React without rewriting existing code. React can also render on the server using Node and power mobile apps using [React Native](https://reactnative.dev/).
+- api: Node.js/Express REST API with MongoDB (Mongoose) and file uploads (Multer)
+- blog: React frontend (CRA) with Axios, Firebase Storage uploads for media, and client auth context
 
-[Learn how to use React in your project](https://reactjs.org/docs/getting-started.html).
+### Features
+- Auth: register/login, profile update
+- Posts: create/read/update/delete with categories and city filter
+- Videos/Podcasts: upload media to Firebase Storage, store URLs in MongoDB
+- Images: served from API `/images` or uploaded via Firebase (thumbnails)
 
-## Installation
+---
 
-React has been designed for gradual adoption from the start, and **you can use as little or as much React as you need**:
+## Quick Start
 
-* Use [Online Playgrounds](https://reactjs.org/docs/getting-started.html#online-playgrounds) to get a taste of React.
-* [Add React to a Website](https://reactjs.org/docs/add-react-to-a-website.html) as a `<script>` tag in one minute.
-* [Create a New React App](https://reactjs.org/docs/create-a-new-react-app.html) if you're looking for a powerful JavaScript toolchain.
+Prereqs: Node 18+ and npm. MongoDB Atlas (or local), Firebase project with Storage enabled.
 
-You can use React as a `<script>` tag from a [CDN](https://reactjs.org/docs/cdn-links.html), or as a `react` package on [npm](https://www.npmjs.com/package/react).
-
-## Documentation
-
-You can find the React documentation [on the website](https://reactjs.org/).  
-
-Check out the [Getting Started](https://reactjs.org/docs/getting-started.html) page for a quick overview.
-
-The documentation is divided into several sections:
-
-* [Tutorial](https://reactjs.org/tutorial/tutorial.html)
-* [Main Concepts](https://reactjs.org/docs/hello-world.html)
-* [Advanced Guides](https://reactjs.org/docs/jsx-in-depth.html)
-* [API Reference](https://reactjs.org/docs/react-api.html)
-* [Where to Get Support](https://reactjs.org/community/support.html)
-* [Contributing Guide](https://reactjs.org/docs/how-to-contribute.html)
-
-You can improve it by sending pull requests to [this repository](https://github.com/reactjs/reactjs.org).
-
-## Examples
-
-We have several examples [on the website](https://reactjs.org/). Here is the first one to get you started:
-
-```jsx
-function HelloMessage({ name }) {
-  return <div>Hello {name}</div>;
-}
-
-ReactDOM.render(
-  <HelloMessage name="Taylor" />,
-  document.getElementById('container')
-);
+### 1) Install
+```
+cd api && npm install
+cd ../blog && npm install
 ```
 
-This example will render "Hello Taylor" into a container on the page.
+### 2) Environment
+Create the following files locally (do not commit):
 
-You'll notice that we used an HTML-like syntax; [we call it JSX](https://reactjs.org/docs/introducing-jsx.html). JSX is not required to use React, but it makes code more readable and writing it feels like writing HTML. If you're using React as a `<script>` tag, read [this section](https://reactjs.org/docs/add-react-to-a-website.html#optional-try-react-with-jsx) on integrating JSX; otherwise, the [recommended JavaScript toolchains](https://reactjs.org/docs/create-a-new-react-app.html) handle it automatically.
+api/.env
+```
+MONGO_URL=your-mongodb-atlas-uri
+PORT=8000
+```
 
-## Contributing
+blog/.env
+```
+PORT=3001
+REACT_APP_API_BASE_URL=http://localhost:8000
+REACT_APP_FIREBASE_API_KEY=...
+REACT_APP_FIREBASE_AUTH_DOMAIN=...
+REACT_APP_FIREBASE_PROJECT_ID=...
+REACT_APP_FIREBASE_STORAGE_BUCKET=<project-id>.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=...
+REACT_APP_FIREBASE_APP_ID=...
+REACT_APP_FIREBASE_MEASUREMENT_ID=...
+```
 
-The main purpose of this repository is to continue evolving React core, making it faster and easier to use. Development of React happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving React.
+Firebase (Console):
+- Enable Storage
+- Authentication → enable Anonymous (or use Email/Password)
+- Storage Rules (dev):
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} { allow read, write: if request.auth != null; }
+  }
+}
+```
 
-### [Code of Conduct](https://code.fb.com/codeofconduct)
+### 3) Run
+```
+# API
+cd api && npm start
 
-Facebook has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](https://code.fb.com/codeofconduct) so that you can understand what actions will and will not be tolerated.
+# Frontend
+cd blog && npm start
+```
+Open `http://localhost:3001`.
 
-### [Contributing Guide](https://reactjs.org/docs/how-to-contribute.html)
+### 4) Seed demo data (optional)
+```
+cd api && npm run seed
+```
 
-Read our [contributing guide](https://reactjs.org/docs/how-to-contribute.html) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to React.
+---
 
-### Good First Issues
+## Project Structure
+- api/index.js: Express app bootstrap; Mongo connection; routes
+- api/routes/*: auth, users, posts, categories, video, podcast
+- api/models/*: Mongoose models
+- blog/src: React app; pages and components
+- blog/src/firebase/index.js: Firebase compat SDK init (reads only REACT_APP_* env)
+- blog/src/setupProxy.js: Proxies `/api` and `/images` → `REACT_APP_API_BASE_URL`
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/react/labels/good%20first%20issue) that contain bugs that have a relatively limited scope. This is a great place to get started.
+---
 
-### License
+## Common Tasks
 
-React is [MIT licensed](./LICENSE).
+Create Post (Write page UI):
+1) Upload image → API `/api/upload`
+2) Submit form → API `/api/posts`
+
+Upload Video/Audio:
+1) Upload media + thumbnail → Firebase Storage
+2) Save record → API `/api/video` or `/api/audio`
+
+Environment/Ports:
+- API reads `PORT` from `api/.env`
+- Frontend reads `PORT` from `blog/.env`
+- Proxy target set via `REACT_APP_API_BASE_URL`
+
+---
+
+## Security & Public Repo
+- All credentials are read from `.env` files; `.env` is in `.gitignore`
+- For PRs, provide `.env.example` values (no secrets)
+- Harden Storage rules before production (size/type limits, path scoping)
+
+---
+
+## API Endpoints (high level)
+- Auth: `POST /api/auth/register`, `POST /api/auth/login`
+- Users: `PUT/DELETE/GET /api/users/:id`
+- Posts: `GET /api/posts`, `GET /api/posts/:id`, `POST /api/posts`, `PUT/DELETE /api/posts/:id`
+- Categories: `GET/POST /api/categories`
+- Upload: `POST /api/upload` (Multer → `/images`)
+- Videos: `GET/POST /api/video`
+- Audio: `GET/POST /api/audio`
+
+---
+
+## Troubleshooting
+- 500 on `/api/posts`: ensure title, desc, city, and username are provided
+- Upload stuck at 0%: enable Firebase Anonymous auth or relax Storage rules
+- Proxy errors: ensure `REACT_APP_API_BASE_URL` matches API host/port
+
+---
+
+## License
+MIT

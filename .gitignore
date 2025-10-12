@@ -1,3 +1,10 @@
+/api/.env
+/blog/.env
+node_modules
+api/node_modules
+blog/node_modules
+build
+blog/build
 # Logs
 logs
 *.log

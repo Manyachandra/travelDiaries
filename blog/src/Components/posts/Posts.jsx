@@ -39,7 +39,7 @@ const  handleTestCallback = (childData) =>{
       <Type iteams={cities} parentCallback = {handleCallback}/>
      <button onClick={cityfilter} className="btn btn-danger">Apply</button>
     </div>
-    {posts.map((p)=>(   <Post post={p}/>)
+    {posts.map((p)=>(   <Post key={p._id} post={p}/>)
    
     )}
       

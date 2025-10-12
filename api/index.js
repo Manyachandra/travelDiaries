@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const { connectMongoDb } = require("./db/connect");
 const multer = require("multer");
 const path = require("path");
 const authRoute = require("./routes/auth");
@@ -19,17 +20,7 @@ app.use(express.json());
 app.use(cors())
 app.use("/images", express.static(path.join(__dirname, "/images")));
 
-mongoose.set("strictQuery", false);
-console.log(process.env.MONGO_URL);
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-
-
-  })
-  .then(console.log("Connected to MongoDB"))
-  .catch((err) => console.log(err));
+// Using MongoDB URL from environment (MONGO_URL)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "images");
@@ -52,6 +43,13 @@ app.use("/api/categories", categoryRoute);
 app.use("/api/video", videoRoute);
 app.use("/api/audio", audioRoute);
 
-app.listen("8000", () => {
-  console.log("Backend is running.");
-});
+connectMongoDb()
+  .then(() => {
+    const PORT = process.env.PORT || "8000";
+    app.listen(PORT, () => {
+      console.log("Backend is running.");
+    });
+  })
+  .catch(() => {
+    process.exit(1);
+  });

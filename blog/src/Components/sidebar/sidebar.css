@@ -3,7 +3,7 @@
     height: fit-content;
     margin: 20px;
     padding-bottom: 30px;
-    background-color: #fdfbfb;
+    background-color: var(--surface);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -24,13 +24,13 @@
     margin: 10px;
     padding: 5px;
     width: 80%;
-    border-top: solid 1px #a7a4a4;
-    border-bottom: solid 1px #a7a4a4;
+    border-top: solid 1px var(--border);
+    border-bottom: solid 1px var(--border);
     text-align: center;
     font-family: "Varela Round", sans-serif;
     font-size: 12px;
     line-height: 19px;
-    color: #222222;
+    color: var(--text);
     font-weight: 600;
   }
   
@@ -42,6 +42,7 @@
   
   .sidebarItem > p {
     padding: 30px;
+    color: var(--text);
   }
   
   .sidebarList {
@@ -54,6 +55,7 @@
     width: 50%;
     margin-top: 15px;
     cursor: pointer;
+    color: var(--text);
   }
   
   .sidebarSocial {

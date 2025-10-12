@@ -3,15 +3,17 @@
     margin: 0px 25px 40px 25px;
     display: flex;
     flex-direction: column;
-    border-radius: 20px;
-    background-color: white;
+    border-radius: 16px;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
   }
   
   .postImg {
     width: 100%;
     height: 280px;
     object-fit: cover;
-    border-radius: 20px;
+    border-radius: 16px 16px 0 0;
   }
   
   .postInfo {
@@ -24,7 +26,7 @@
     font-family: "Varela Round", Arial, Helvetica, sans-serif;
     font-weight: 400;
     font-size: 11px;
-    color: #be9656;
+    color: var(--accent);
     line-height: 19px;
     margin-top: 15px;
     margin-right: 10px;
@@ -36,7 +38,7 @@
     font-size: 28px;
     font-weight: 900;
     margin-top: 15px;
-    color: black;
+    color: var(--text);
     cursor: pointer;
   }
   
@@ -45,7 +47,7 @@
     font-style: italic;
     font-size: 13px;
     font-weight: 400;
-    color: #999999;
+    color: var(--muted);
     margin-top: 15px;
   }
   
@@ -54,7 +56,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 24px;
-    color: #444444;
+    color: var(--text);
     margin-top: 15px;
     overflow: hidden;
     padding: 20px;

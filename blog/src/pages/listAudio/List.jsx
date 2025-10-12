@@ -44,7 +44,7 @@ const ListDisplayAudio = () => {
                 console.log("called")
 
                 const res = await axios.get(
-                    "http://localhost:5000/api/audio" +  search
+                    "/api/audio" +  search
 
 
                 );

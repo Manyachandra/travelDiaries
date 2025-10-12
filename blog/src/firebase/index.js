@@ -3,15 +3,6 @@
 // import 'firebase/compat/firestore';
 // import "firebase/compat/storage";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyD3_F8vPHpK17Wb_SUVn3eK6FlPJVclzoY",
-//   authDomain: "traveldiaries-8f7ee.firebaseapp.com",
-//   projectId: "traveldiaries-8f7ee",
-//   storageBucket: "traveldiaries-8f7ee.appspot.com",
-//   messagingSenderId: "782343480075",
-//   appId: "1:782343480075:web:e689718a85e551ceb1380e",
-//   measurementId: "G-Z82E1WE09S"
-// };
 // if (!firebase.apps.length) {
 //   firebase.initializeApp(firebaseConfig);
 // }else {
@@ -28,8 +19,6 @@ import 'firebase/compat/auth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import "firebase/compat/storage";
-import {initializeApp} from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -37,13 +26,13 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD3_F8vPHpK17Wb_SUVn3eK6FlPJVclzoY",
-  authDomain: "traveldiaries-8f7ee.firebaseapp.com",
-  projectId: "traveldiaries-8f7ee",
-  storageBucket: "traveldiaries-8f7ee.appspot.com",
-  messagingSenderId: "782343480075",
-  appId: "1:782343480075:web:e689718a85e551ceb1380e",
-  measurementId: "G-Z82E1WE09S"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
@@ -52,10 +41,28 @@ if (!firebase.apps.length) {
 }else {
   firebase.app(); // if already initialized, use that one
 }
-// const app = initializeApp(firebaseConfig);
-// eslint-disable-next-line no-unused-vars
-//const analytics = getAnalytics(app);
+// Dev-only: log bucket and project to confirm env values are applied (no secrets logged)
+if (process.env.NODE_ENV === 'development') {
+  try {
+    const opts = firebase.app().options || {};
+    // eslint-disable-next-line no-console
+    console.log('Firebase config (dev):', { storageBucket: opts.storageBucket, projectId: opts.projectId });
+  } catch (_) {}
+}
+// Auth is optional; many dev setups use public Storage rules.
+// To avoid errors when API key/domains are restricted, we do not initialize Auth by default.
+// If you require auth, enable it and initialize here.
+const authReady = Promise.resolve(null);
 
-const storage = firebase.storage().ref();
+const storage = firebase.storage();
+const bucketName = process.env.REACT_APP_FIREBASE_STORAGE_BUCKET;
+export function getStorageRef(path) {
+  try {
+    if (bucketName) {
+      return storage.refFromURL(`gs://${bucketName}`).child(path || "");
+    }
+  } catch (_) {}
+  return storage.ref(path || "");
+}
 
-export { storage, firebase as default };
+export { storage, authReady, firebase as default };

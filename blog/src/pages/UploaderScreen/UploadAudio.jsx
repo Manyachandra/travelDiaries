@@ -1,5 +1,5 @@
 import React, { useState, useContext, } from "react";
-import { storage } from "../../firebase/index";
+import { storage, authReady, getStorageRef } from "../../firebase/index";
 import ReactPlayer from 'react-player'
 import "./upload.css"
 import "./uploaderScreen.css"
@@ -29,13 +29,13 @@ const UploadAudio = () => {
     const [vidprogress, setvidProgress] = useState(0);
     // var Url = "https://firebasestorage.googleapis.com/v0/b/game-24c03.appspot.com/o/images%2FReveal%20your%20logo%20with%20HORROR%20Lamp%20Bloody%20wall%20Halloween%20video%20intro.mp4?alt=media&token=7ed98970-8e7f-467f-866b-53b55c988bf4"
     if (video)
-        var VideoRef = storage.ref(`videos/${video.name}`);
+        var VideoRef = getStorageRef(`videos/${video.name}`);
     else
-        var VideoRef = storage.ref("videos/");
+        var VideoRef = getStorageRef("videos/");
     if (image)
-        var ImageRef = storage.ref(`images/${image.name}`);
+        var ImageRef = getStorageRef(`images/${image.name}`);
     else
-        var ImageRef = storage.ref("images/");
+        var ImageRef = getStorageRef("images/");
 
     const videoDeleteUpload = () => {
         VideoRef.delete().then(() => {
@@ -75,7 +75,7 @@ const UploadAudio = () => {
             handleCallback()
             var s = city;
             const res = await axios.post(
-                "http://localhost:5000/api/audio",
+                "/api/audio",
                 {
 
                     Poster: url,
@@ -99,9 +99,10 @@ const UploadAudio = () => {
         }
     }
     const handleVideoUpload = async () => {
+        await authReady;
         if (video === null) alert("Please Upload a Video")
         else {
-            const uploadTask = storage.ref(`audios/${video.name}`).put(video);
+            const uploadTask = getStorageRef(`audios/${video.name}`).put(video);
             uploadTask.on(
                 "state_changed",
                 snapshot => {
@@ -114,8 +115,7 @@ const UploadAudio = () => {
                     console.log(error);
                 },
                 async () => {
-                    storage
-                        .ref("audios")
+                    getStorageRef("audios")
                         .child(video.name)
                         .getDownloadURL()
                         .then(url => {
@@ -140,10 +140,11 @@ const UploadAudio = () => {
 
         }
     };
-    const handleImageUpload = () => {
+    const handleImageUpload = async () => {
+        await authReady;
         if (image === null) alert("Please Upload a Video")
         else {
-            const uploadTask = storage.ref(`images/${image.name}`).put(image);
+            const uploadTask = getStorageRef(`images/${image.name}`).put(image);
             uploadTask.on(
                 "state_changed",
                 snapshot => {
@@ -156,8 +157,7 @@ const UploadAudio = () => {
                     console.log(error);
                 },
                 () => {
-                    storage
-                        .ref("images")
+                    getStorageRef("images")
                         .child(image.name)
                         .getDownloadURL()
                         .then(url => {

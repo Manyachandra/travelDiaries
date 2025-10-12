@@ -43,7 +43,7 @@ const ListDisplay = () => {
                 console.log("called")
 
                 const res = await axios.get(
-                    "http://localhost:5000/api/video" + search
+                    "/api/video" + search
 
 
                 );

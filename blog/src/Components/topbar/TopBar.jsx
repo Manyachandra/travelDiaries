@@ -1,11 +1,13 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../../context/Context";
+import { ThemeContext } from "../../context/ThemeContext";
 import "./topbar.css";
 
 export default function TopBar() {
   const { user, dispatch } = useContext(Context);
-  const PF = "http://localhost:5000/images/"
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const PF = "/images/"
 
   const handleLogout = () => {
     dispatch({ type: "LOGOUT" });
@@ -44,6 +46,7 @@ export default function TopBar() {
         </ul>
       </div>
       <div className="topRight">
+        <button className="btn btn-dark m-2" onClick={toggleTheme}>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</button>
         {user ? (
           <Link to="/settings">
             <img className="topImg" src={PF + user.profilePic} alt="" />
@@ -65,11 +68,11 @@ export default function TopBar() {
         {/* <i className="topSearchIcon fas fa-search"></i> */}
         {user &&
           <>
-            <Link className="link m-2" to="/Uploadpodcast"><button className="btn btn-danger"> <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload Pod </button></Link>
-            <Link className="link m-2" to="/upload"><button className="btn btn-danger"> <i class="fa-solid fa-arrow-up-from-bracket"></i> Uploads </button></Link>
+            <Link className="link m-2" to="/Uploadpodcast"><button className="btn btn-danger"> <i className="fa-solid fa-arrow-up-from-bracket"></i> Upload Pod </button></Link>
+            <Link className="link m-2" to="/upload"><button className="btn btn-danger"> <i className="fa-solid fa-arrow-up-from-bracket"></i> Uploads </button></Link>
             <button className="btn btn-dark m-2 topListItem" onClick={handleLogout}>
 
-              <i class="fa-solid fa-user-slash"></i>
+              <i className="fa-solid fa-user-slash"></i>
 
 
               "Sign-Off"
