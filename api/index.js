@@ -46,10 +46,14 @@ app.use("/api/audio", audioRoute);
 connectMongoDb()
   .then(() => {
     const PORT = process.env.PORT || "8000";
-    app.listen(PORT, () => {
-      console.log("Backend is running.");
-    });
+    if (!process.env.VERCEL) {
+      app.listen(PORT, () => {
+        console.log("Backend is running.");
+      });
+    }
   })
   .catch(() => {
     process.exit(1);
   });
+
+module.exports = app;

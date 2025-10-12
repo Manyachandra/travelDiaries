@@ -8,8 +8,19 @@ export default function Sidebar() {
 
   useEffect(() => {
     const getCats = async () => {
-      const res = await axios.get("/api/categories");
-      setCats(res.data);
+      try {
+        const res = await axios.get("/api/categories");
+        const payload = res?.data;
+        const next = Array.isArray(payload)
+          ? payload
+          : Array.isArray(payload?.data)
+          ? payload.data
+          : [];
+        setCats(next);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+        setCats([]);
+      }
     };
     getCats();
   }, []);
@@ -29,7 +40,7 @@ export default function Sidebar() {
       <div className="sidebarItem">
         <span className="sidebarTitle">CATEGORIES</span>
         <ul className="sidebarList">
-          {cats.map((c) => (
+          {(Array.isArray(cats) ? cats : []).map((c) => (
             <Link key={c._id || c.name} to={`/?cat=${c.name}`} className="link">
             <li className="sidebarListItem">{c.name}</li>
             </Link>
