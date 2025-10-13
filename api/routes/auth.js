@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const ActivityLog = require("../models/ActivityLog");
  
 //REGISTER
 router.post("/register", async (req, res) => {
@@ -14,6 +15,20 @@ router.post("/register", async (req, res) => {
     });
 
     const user = await newUser.save();
+    // best-effort log
+    try {
+      await ActivityLog.create({
+        action: "register",
+        userId: user?._id,
+        username: user?.username,
+        ip: req.headers["x-forwarded-for"]?.split(",")[0] || req.socket?.remoteAddress || "",
+        userAgent: req.headers["user-agent"] || "",
+        uaPlatform: req.headers["sec-ch-ua-platform"] || "",
+        uaBrands: req.headers["sec-ch-ua"] || "",
+        uaMobile: req.headers["sec-ch-ua-mobile"] || "",
+        referer: req.headers["referer"] || "",
+      });
+    } catch (_) {}
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
@@ -34,7 +49,21 @@ router.post("/login", async (req, res) => {
     }
 
     const { password, ...others } = await user._doc;
-    res.status(200).json(others);
+  // best-effort log
+  try {
+    await ActivityLog.create({
+      action: "login",
+      userId: user?._id,
+      username: user?.username,
+      ip: req.headers["x-forwarded-for"]?.split(",")[0] || req.socket?.remoteAddress || "",
+      userAgent: req.headers["user-agent"] || "",
+      uaPlatform: req.headers["sec-ch-ua-platform"] || "",
+      uaBrands: req.headers["sec-ch-ua"] || "",
+      uaMobile: req.headers["sec-ch-ua-mobile"] || "",
+      referer: req.headers["referer"] || "",
+    });
+  } catch (_) {}
+  res.status(200).json(others);
   } catch (err) {
     res.status(500).json(err);
   }

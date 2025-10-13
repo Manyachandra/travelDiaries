@@ -30,10 +30,12 @@ const allowedOrigins = [
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true); // allow non-browser clients
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    const vercelPattern = /^https:\/\/travel-diaries-[a-z0-9-]+\.vercel\.app$/i;
+    if (allowedOrigins.indexOf(origin) !== -1 || vercelPattern.test(origin)) {
       return callback(null, true);
     }
-    return callback(new Error('Not allowed by CORS'));
+    // Reject without throwing to avoid 500s on preflight
+    return callback(null, false);
   },
   methods: ['GET','HEAD','PUT','PATCH','POST','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
@@ -79,6 +81,27 @@ app.use("/api/posts", postRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/video", videoRoute);
 app.use("/api/audio", audioRoute);
+
+// Health check: report MongoDB and app status without leaking secrets
+app.get('/api/health', (req, res) => {
+  const mongoose = require('mongoose');
+  const redact = (s = '') => (typeof s === 'string' ? s.replace(/:(?:[^@]+)@/, ':***@') : '');
+  const readyStates = ['disconnected','connected','connecting','disconnecting'];
+  const ready = mongoose.connection?.readyState;
+  res.status(200).json({
+    status: 'ok',
+    mongo: {
+      connected: ready === 1,
+      state: readyStates[ready] || String(ready),
+      hasEnv: !!process.env.MONGO_URL,
+      uriPreview: redact(process.env.MONGO_URL || ''),
+    },
+    env: {
+      vercel: !!process.env.VERCEL,
+      node: process.version,
+    }
+  });
+});
 
 connectMongoDb()
   .then(() => {
