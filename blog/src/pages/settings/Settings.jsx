@@ -3,6 +3,7 @@ import Sidebar from "../../Components/sidebar/Sidebar";
 import { useContext, useState } from "react";
 import { Context } from "../../context/Context";
 import axios from "axios";
+import toast from 'react-hot-toast';
 
 export default function Settings() {
   const [file, setFile] = useState(null);
@@ -18,40 +19,58 @@ export default function Settings() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (email && !/\S+@\S+\.\S+/.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    
+    if (password && password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+    
     dispatch({ type: "UPDATE_START" });
     setIsSubmitting(true);
     setSuccess(false);
     setErrorMsg("");
+    
+    const toastId = toast.loading('Updating your profile...');
+    
     const updatedUser = {
       userId: user._id,
-      username:user.username,
+      username: user.username,
       email,
       password,
     };
-    if (file) {
-
-      const data = new FormData();
-      const filename = Date.now() + file.name;
-      data.append("name", filename);
-      data.append("file", file);
-      updatedUser.profilePic = filename;
-      try {
-        await axios.post("/api/upload", data);
-
-      } catch (err) {
-
-      }
-    }
+    
     try {
-     
+      if (file) {
+        const data = new FormData();
+        const filename = Date.now() + file.name;
+        data.append("name", filename);
+        data.append("file", file);
+        updatedUser.profilePic = filename;
+        
+        try {
+          await axios.post("/api/upload", data);
+        } catch (err) {
+          toast.error('Failed to upload profile picture', { id: toastId });
+          setIsSubmitting(false);
+          dispatch({ type: "UPDATE_FAILURE" });
+          return;
+        }
+      }
+      
       const res = await axios.put("/api/users/" + user._id, updatedUser);
-      console.log(res);
       setSuccess(true);
       dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
+      toast.success('Profile updated successfully!', { id: toastId });
     } catch (err) {
-      console.log(updatedUser);
-      console.log(err);
-      setErrorMsg("Update failed. Please try again.");
+      const errorMsg = "Update failed. Please try again.";
+      setErrorMsg(errorMsg);
+      toast.error(errorMsg, { id: toastId });
       dispatch({ type: "UPDATE_FAILURE" });
     } finally {
       setIsSubmitting(false);
@@ -99,7 +118,11 @@ export default function Settings() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button className="settingsSubmit" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Updating..." : "Update"}
+            {isSubmitting ? (
+              <><i className="fa fa-spinner fa-spin"></i> Updating...</>
+            ) : (
+              'Update'
+            )}
           </button>
           {success && (
             <div style={{

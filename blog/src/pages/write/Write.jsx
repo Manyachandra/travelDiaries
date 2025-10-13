@@ -3,8 +3,10 @@ import "./write.css";
 import axios from "axios";
 import { Context } from "../../context/Context";
 import Type from '../../Video/Type';
-import cities from '../../Video/cities'
+import cities from '../../Video/cities';
 import Test from "../../Video/test";
+import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 
 export default function Write() {
   const [title, setTitle] = useState("");
@@ -12,10 +14,30 @@ export default function Write() {
   const [city, setCity] = useState("");
   const [category, setCategory] = useState([]);
   const [file, setFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useContext(Context);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!title.trim()) {
+      toast.error('Please enter a title');
+      return;
+    }
+    if (!desc.trim()) {
+      toast.error('Please write your story');
+      return;
+    }
+    if (!city) {
+      toast.error('Please select a city');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    const toastId = toast.loading('Publishing your post...');
+    
     const newPost = {
       username: user.username,
       title,
@@ -23,20 +45,31 @@ export default function Write() {
       city,
       categories: category.flat(Infinity)
     };
-    if (file) {
-      const data = new FormData();
-      const filename = Date.now() + file.name;
-      data.append("name", filename);
-      data.append("file", file);
-      newPost.photo = filename;
-      try {
-        await axios.post("/api/upload", data);
-      } catch (err) { }
-    }
+    
     try {
+      if (file) {
+        const data = new FormData();
+        const filename = Date.now() + file.name;
+        data.append("name", filename);
+        data.append("file", file);
+        newPost.photo = filename;
+        
+        try {
+          await axios.post("/api/upload", data);
+        } catch (err) {
+          toast.error('Failed to upload image', { id: toastId });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+      
       const res = await axios.post("/api/posts/", newPost);
-      window.location.replace("/post/" + res.data._id);
-    } catch (err) { }
+      toast.success('Post published successfully!', { id: toastId });
+      navigate("/post/" + res.data._id);
+    } catch (err) {
+      toast.error('Failed to publish post. Please try again.', { id: toastId });
+      setIsSubmitting(false);
+    }
   };
 const  handleCallback = (childData) =>{
     setCity(childData)
@@ -89,10 +122,13 @@ const  handleTestCallback = (childData) =>{
             onChange={e => setDesc(e.target.value)}
           ></textarea>
         </div>
-        <button className="btn btn-success writeSubmit m-2" type="submit">
-
-Publish
-</button>
+        <button className="btn btn-success writeSubmit m-2" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <><i className="fa fa-spinner fa-spin"></i> Publishing...</>
+          ) : (
+            'Publish'
+          )}
+        </button>
       </form>
  
     </div>

@@ -12,6 +12,7 @@ import { Context } from "./context/Context";
 import Upload from "./pages/UploaderScreen/upload";
 import ListDisplay from "./pages/lists/List";
 import Display from "./pages/DisplayScreen/Display";
+import { Toaster } from 'react-hot-toast';
 
 import Test from "./Video/test";
 import List from "./pages/Podcast/list";
@@ -23,6 +24,26 @@ function App() {
    const { user } = useContext(Context);
    return (
       <Router>
+         <Toaster position="top-right" toastOptions={{
+            duration: 4000,
+            style: {
+               background: 'var(--surface)',
+               color: 'var(--text)',
+               border: '1px solid var(--border)',
+            },
+            success: {
+               iconTheme: {
+                  primary: '#16a34a',
+                  secondary: '#fff',
+               },
+            },
+            error: {
+               iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#fff',
+               },
+            },
+         }} />
          <Topbar />
          <Routes>
             <Route exact path="/" element={<Homepage />}>

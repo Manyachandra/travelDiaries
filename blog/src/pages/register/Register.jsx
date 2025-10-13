@@ -1,26 +1,52 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 import "./register.css";
 
 export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(false);
+    
+    // Validation
+    if (!username || !email || !password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+    
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    
+    setIsLoading(true);
+    
     try {
-      const res = await axios.post("/api/auth/register", {
+      await axios.post("/api/auth/register", {
         username,
         email,
         password,
       });
-      res.data && window.location.replace("/login");
+      toast.success('Account created successfully! Please login.');
+      navigate('/login');
     } catch (err) {
-      setError(true);
+      const errorMsg = err.response?.status === 400 
+        ? 'Username or email already exists' 
+        : 'Registration failed. Please try again.';
+      toast.error(errorMsg);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -48,8 +74,12 @@ export default function Register() {
           placeholder="Enter your password..."
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button className="registerButton" type="submit">
-          Register
+        <button className="registerButton" type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <><i className="fa fa-spinner fa-spin"></i> Creating account...</>
+          ) : (
+            'Register'
+          )}
         </button>
       </form>
       <button className="registerLoginButton">
@@ -57,7 +87,6 @@ export default function Register() {
           Login
         </Link>
       </button>
-      {error && <span style={{color:"red", marginTop:"10px"}}>Something went wrong!</span>}
     </div>
   );
 }
