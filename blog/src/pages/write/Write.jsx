@@ -64,8 +64,9 @@ export default function Write() {
       }
       
       const res = await axios.post("/api/posts/", newPost);
+      const postData = res.data.post || res.data;
       toast.success('Post published successfully!', { id: toastId });
-      navigate("/post/" + res.data._id);
+      navigate("/post/" + postData._id);
     } catch (err) {
       toast.error('Failed to publish post. Please try again.', { id: toastId });
       setIsSubmitting(false);

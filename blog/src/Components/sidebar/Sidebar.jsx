@@ -10,13 +10,7 @@ export default function Sidebar() {
     const getCats = async () => {
       try {
         const res = await axios.get("/api/categories");
-        const payload = res?.data;
-        const next = Array.isArray(payload)
-          ? payload
-          : Array.isArray(payload?.data)
-          ? payload.data
-          : [];
-        setCats(next);
+        setCats(res.data.categories || res.data || []);
       } catch (err) {
         console.error("Failed to load categories", err);
         setCats([]);

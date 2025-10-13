@@ -17,7 +17,7 @@ export default function Home(props) {
       setLoading(true);
       try {
         const res = await axios.get("/api/posts" + search);
-        setPosts(res.data);
+        setPosts(res.data.posts || res.data || []);
       } catch (err) {
         toast.error('Failed to load posts. Please try again later.');
         setPosts([]);

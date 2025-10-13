@@ -27,9 +27,10 @@ export default function SinglePost() {
       setError(false);
       try {
         const res = await axios.get("/api/posts/" + path);
-        setPost(res.data);
-        setTitle(res.data.title);
-        setDesc(res.data.desc);
+        const postData = res.data.post || res.data;
+        setPost(postData);
+        setTitle(postData.title);
+        setDesc(postData.desc);
       } catch (err) {
         setError(true);
         toast.error('Failed to load post. Please try again.');

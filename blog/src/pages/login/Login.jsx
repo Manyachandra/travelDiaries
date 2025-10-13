@@ -28,14 +28,21 @@ export default function Login() {
         password: passwordRef.current.value,
       });
      
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-      toast.success(`Welcome back, ${res.data.username}!`);
+      const userData = res.data.user || res.data;
+      const token = res.data.token;
+      
+      // Store token in localStorage
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      
+      dispatch({ type: "LOGIN_SUCCESS", payload: userData });
+      toast.success(`Welcome back, ${userData.username}!`);
       navigate('/');
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE" });
-      const errorMsg = err.response?.status === 400 
-        ? 'Invalid username or password' 
-        : 'Unable to login. Please try again later.';
+      const errorMsg = err.response?.data?.message || 
+        (err.response?.status === 400 ? 'Invalid username or password' : 'Unable to login. Please try again later.');
       toast.error(errorMsg);
     }
   };

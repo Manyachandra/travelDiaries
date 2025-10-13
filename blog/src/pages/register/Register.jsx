@@ -41,9 +41,8 @@ export default function Register() {
       toast.success('Account created successfully! Please login.');
       navigate('/login');
     } catch (err) {
-      const errorMsg = err.response?.status === 400 
-        ? 'Username or email already exists' 
-        : 'Registration failed. Please try again.';
+      const errorMsg = err.response?.data?.message || 
+        (err.response?.status === 400 ? 'Username or email already exists' : 'Registration failed. Please try again.');
       toast.error(errorMsg);
     } finally {
       setIsLoading(false);

@@ -11,6 +11,7 @@ export default function TopBar() {
   const PF = `${apiBase.replace(/\/+$/, "")}/images/`;
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     dispatch({ type: "LOGOUT" });
   };
   return (

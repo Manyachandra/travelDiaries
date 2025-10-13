@@ -64,8 +64,9 @@ export default function Settings() {
       }
       
       const res = await axios.put("/api/users/" + user._id, updatedUser);
+      const userData = res.data.user || res.data;
       setSuccess(true);
-      dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
+      dispatch({ type: "UPDATE_SUCCESS", payload: userData });
       toast.success('Profile updated successfully!', { id: toastId });
     } catch (err) {
       const errorMsg = "Update failed. Please try again.";
