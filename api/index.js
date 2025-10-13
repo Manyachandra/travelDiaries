@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 const dotenv = require("dotenv");
@@ -13,10 +14,35 @@ const authRoute = require("./routes/auth");
 const categoryRoute = require("./routes/categories");
 const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
-const videoRoute=require("./routes/video");
-const audioRoute=require("./routes/podcast");
+const videoRoute = require("./routes/video");
+const audioRoute = require("./routes/podcast");
+const { errorHandler } = require("./middleware/errorHandler");
 
 dotenv.config();
+
+// Security: Helmet middleware
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow images from different origins
+}));
+
+// Rate limiting for auth routes (stricter)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: { success: false, message: 'Too many authentication attempts, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting for general API routes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { success: false, message: 'Too many requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(express.json());
 
 // CORS configuration: allow localhost (dev) and the deployed frontend origin
@@ -71,16 +97,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (req, res) => {
-  res.status(200).json("File has been uploaded");
+  res.status(200).json({ success: true, message: "File has been uploaded" });
 });
 
-app.use("/api/auth", authRoute);
-
-app.use("/api/users", userRoute);
-app.use("/api/posts", postRoute);
-app.use("/api/categories", categoryRoute);
-app.use("/api/video", videoRoute);
-app.use("/api/audio", audioRoute);
+// Apply rate limiters
+app.use("/api/auth", authLimiter, authRoute);
+app.use("/api/users", apiLimiter, userRoute);
+app.use("/api/posts", apiLimiter, postRoute);
+app.use("/api/categories", apiLimiter, categoryRoute);
+app.use("/api/video", apiLimiter, videoRoute);
+app.use("/api/audio", apiLimiter, audioRoute);
 
 // Health check: report MongoDB and app status without leaking secrets
 app.get('/api/health', (req, res) => {
@@ -102,6 +128,17 @@ app.get('/api/health', (req, res) => {
     }
   });
 });
+
+// 404 handler for undefined routes
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
+  });
+});
+
+// Global error handler (must be last)
+app.use(errorHandler);
 
 connectMongoDb()
   .then(() => {

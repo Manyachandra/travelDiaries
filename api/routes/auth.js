@@ -2,59 +2,38 @@ const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const ActivityLog = require("../models/ActivityLog");
+const { generateToken } = require("../middleware/auth");
+const { asyncHandler, errorResponse } = require("../middleware/errorHandler");
  
 //REGISTER
-router.post("/register", async (req, res) => {
-  try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(req.body.password, salt);
-    const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPass,
-    });
+router.post("/register", asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
 
-    const user = await newUser.save();
-    // best-effort log
-    try {
-      await ActivityLog.create({
-        action: "register",
-        userId: user?._id,
-        username: user?.username,
-        ip: req.headers["x-forwarded-for"]?.split(",")[0] || req.socket?.remoteAddress || "",
-        userAgent: req.headers["user-agent"] || "",
-        uaPlatform: req.headers["sec-ch-ua-platform"] || "",
-        uaBrands: req.headers["sec-ch-ua"] || "",
-        uaMobile: req.headers["sec-ch-ua-mobile"] || "",
-        referer: req.headers["referer"] || "",
-      });
-    } catch (_) {}
-    res.status(200).json(user);
-  } catch (err) {
-    res.status(500).json(err);
+  // Validation
+  if (!username || !email || !password) {
+    return errorResponse(res, 400, 'Username, email, and password are required');
   }
-});
 
-//LOGIN
-router.post("/login", async (req, res) => {
-  try {
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) {
-      return res.status(400).json("Wrong credentials!");
-    }
+  if (password.length < 6) {
+    return errorResponse(res, 400, 'Password must be at least 6 characters');
+  }
 
-    const validated = await bcrypt.compare(req.body.password, user.password);
-    if (!validated) {
-      return res.status(400).json("Wrong credentials!");
-    }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPass = await bcrypt.hash(password, salt);
+  const newUser = new User({
+    username,
+    email,
+    password: hashedPass,
+  });
 
-    const { password, ...others } = await user._doc;
-  // best-effort log
+  const user = await newUser.save();
+  
+  // best-effort activity log
   try {
     await ActivityLog.create({
-      action: "login",
-      userId: user?._id,
-      username: user?.username,
+      action: "register",
+      userId: user._id,
+      username: user.username,
       ip: req.headers["x-forwarded-for"]?.split(",")[0] || req.socket?.remoteAddress || "",
       userAgent: req.headers["user-agent"] || "",
       uaPlatform: req.headers["sec-ch-ua-platform"] || "",
@@ -63,10 +42,63 @@ router.post("/login", async (req, res) => {
       referer: req.headers["referer"] || "",
     });
   } catch (_) {}
-  res.status(200).json(others);
-  } catch (err) {
-    res.status(500).json(err);
+  
+  // Remove password from response
+  const { password: _, ...userWithoutPassword } = user._doc;
+  
+  res.status(201).json({
+    success: true,
+    message: 'User registered successfully',
+    user: userWithoutPassword
+  });
+}));
+
+//LOGIN
+router.post("/login", asyncHandler(async (req, res) => {
+  const { username, password } = req.body;
+
+  // Validation
+  if (!username || !password) {
+    return errorResponse(res, 400, 'Username and password are required');
   }
-});
+
+  const user = await User.findOne({ username });
+  if (!user) {
+    return errorResponse(res, 400, 'Wrong credentials!');
+  }
+
+  const validated = await bcrypt.compare(password, user.password);
+  if (!validated) {
+    return errorResponse(res, 400, 'Wrong credentials!');
+  }
+
+  // Generate JWT token
+  const token = generateToken(user._id.toString(), user.username);
+
+  // best-effort activity log
+  try {
+    await ActivityLog.create({
+      action: "login",
+      userId: user._id,
+      username: user.username,
+      ip: req.headers["x-forwarded-for"]?.split(",")[0] || req.socket?.remoteAddress || "",
+      userAgent: req.headers["user-agent"] || "",
+      uaPlatform: req.headers["sec-ch-ua-platform"] || "",
+      uaBrands: req.headers["sec-ch-ua"] || "",
+      uaMobile: req.headers["sec-ch-ua-mobile"] || "",
+      referer: req.headers["referer"] || "",
+    });
+  } catch (_) {}
+
+  // Remove password from response
+  const { password: _, ...userWithoutPassword } = user._doc;
+
+  res.status(200).json({
+    success: true,
+    message: 'Login successful',
+    token,
+    user: userWithoutPassword
+  });
+}));
 
 module.exports = router;

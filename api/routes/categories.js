@@ -1,23 +1,27 @@
 const router = require("express").Router();
 const Category = require("../models/Category");
+const { verifyToken } = require("../middleware/auth");
+const { asyncHandler, errorResponse } = require("../middleware/errorHandler");
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, asyncHandler(async (req, res) => {
   const newCat = new Category(req.body);
-  try {
-    const savedCat = await newCat.save();
-    res.status(200).json(savedCat);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+  const savedCat = await newCat.save();
 
-router.get("/", async (req, res) => {
-    try {
-      const cats = await Category.find();
-      res.status(200).json(cats);
-    } catch (err) {
-      res.status(500).json(err);
-    }
+  res.status(201).json({
+    success: true,
+    message: 'Category created successfully',
+    category: savedCat
   });
+}));
+
+router.get("/", asyncHandler(async (req, res) => {
+  const cats = await Category.find();
+
+  res.status(200).json({
+    success: true,
+    count: cats.length,
+    categories: cats
+  });
+}));
 
 module.exports = router;
