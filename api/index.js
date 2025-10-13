@@ -18,15 +18,30 @@ const audioRoute=require("./routes/podcast");
 
 dotenv.config();
 app.use(express.json());
-app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001'
-  ],
+
+// CORS configuration: allow localhost (dev) and the deployed frontend origin
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  process.env.FRONTEND_ORIGIN || 'https://travel-diaries-omega.vercel.app',
+];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow non-browser clients
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET','HEAD','PUT','PATCH','POST','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
   credentials: true,
-}))
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 // Serve images with a graceful fallback to avoid 404s in the frontend
 app.use("/images", (req, res, next) => {
   const requestedPath = (req.path || "/").replace(/^\/+/, "");
