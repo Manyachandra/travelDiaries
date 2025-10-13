@@ -1,10 +1,13 @@
 .container {
     margin: 0;
-    padding: 10vh;
-    height: 100%;
+    padding: 80px 16px 24px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
     font-family: "Fira Sans", sans-serif;
-    background-color: black;
+    background-color: var(--bg);
 }
 
 .App {
@@ -16,18 +19,20 @@
 
 .cplayer {
     display: block;
-    background: rgb(37,19,86);
-    background: linear-gradient(180deg, rgba(37,19,86,1) 85%, rgba(84,15,160,1) 100%);    
-    width: 30vw;
-    height: 85vh;
-    margin: 0px auto;
-    padding: 10px;
-    border-radius: 16px;
-   
+    background: var(--surface);
+    border: 1px solid var(--border);
+    width: min(380px, 95vw);
+    min-height: 620px;
+    margin: 0 auto;
+    padding: 18px 18px 28px;
+    border-radius: 28px;
+    color: var(--text);
+    box-shadow: 0 18px 40px rgba(0,0,0,.35);
+    border-width: 2px;
 }
 
 .cplayer > h4 {
-    color: #FFF;
+    color: var(--muted);
     font-size: 14px;
     text-transform: uppercase;
     font-weight: 500;
@@ -35,7 +40,7 @@
 }
 
 .cplayer > p {
-    color: #AAA;
+    color: var(--muted);
     font-size: 14px;
     text-align: center;
     font-weight: 600;
@@ -53,82 +58,99 @@
 
 .detailsimg img {
     display: block;
-    margin: 50px auto;
+    margin: 12px auto 18px;
     width: 100%;
-    max-width: 250px;
-    border-radius: 50%;
-    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.8), -6px -6px 12px rgba(255, 255, 255, 0.4);
+    max-width: 240px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 24px rgba(0,0,0,.25);
 }
 
 .cplayerdetails .detailsimg:after {
     content: '';
     display: block;
     position: absolute;
-    top: -25px;
-    left: -25px;
-    right: -25px;
-    bottom: -25px;
-    border-radius: 50%;
-    border: 3px dashed rgb(200,116,241);;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 14px;
+    border: 2px dashed var(--border);
 }
 
  .detailstitle {
-    color: #EEE;
+    color: var(--text);
     font-size: 28px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(255,255,255,0.4);
     text-align: center;
     margin-bottom: 10px;
 }
 
 .detailsartist {
-    color: #AAA;
+    color: var(--muted);
     font-size: 20px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(255,255,255,0.4);
     text-align: center;
     margin-bottom: 20px;
 }
 
 .cplayercontrols {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 30px;
+    position: relative;
+    width: 240px;
+    height: 240px;
+    margin: 18px auto 8px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, var(--surface) 0%, var(--bg) 100%);
+    border: 2px solid var(--border);
+    box-shadow: inset 0 4px 12px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.25);
 }
 
- .playbtn {
+.playbtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
-    margin: 0 30px;
-    padding: 20px;
+    margin: 0;
+    width: 76px;
+    height: 76px;
+    padding: 0;
     border-radius: 50%;
     border: none;
     outline: none;
-    background: rgb(84,15,160);
-    background: linear-gradient(180deg, rgba(84,15,160,1) 5%, rgba(124,83,208,1) 100%);
-    color: #FFF;
+    background: var(--primary);
+    color: #fff;
     font-size: 24px;
     cursor: pointer;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px,rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px rgba(0,0,0,.3);
 }
 
 .skipbtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     outline: none;
     cursor: pointer;
-    color: #7c53d0;
-    color: linear-gradient(180deg, rgba(84,15,160,1) 5%, rgba(124,83,208,1) 100%);
-    font-size: 18px;
+    color: var(--accent);
+    font-size: 20px;
 }
+.skipbtn:first-child { left: 18px; }
+.skipbtn:last-child { right: 18px; }
 
 .barss{
     display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .currentTime,
 .duration {
   font-family: monospace;
   font-size: 13px;
-  color: #FFF;
+  color: var(--muted);
 }
 .duration{
     position: relative;
@@ -142,16 +164,16 @@
 .progressBar {
   --bar-bg:  rgb(0, 0, 0);
   --seek-before-width: 0;
-  --seek-before-color: rgb(200,116,241);
-  --knobby: rgb(195,81,255);
+  --seek-before-color: var(--accent);
+  --knobby: var(--accent);
   --selectedKnobby: #fff;
 
   appearance: none;
-  background: var(--bar-bg);;
+  background: var(--border);
   border-radius: 5px;
   position: relative;
   margin: 2px;
-  width: 40vh;
+  width: min(520px, 85vw);
   height: 8px;
   outline: none;
 }

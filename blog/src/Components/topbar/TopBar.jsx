@@ -46,39 +46,34 @@ export default function TopBar() {
         </ul>
       </div>
       <div className="topRight">
-        <button className="btn btn-dark m-2" onClick={toggleTheme}>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</button>
+        <button className="nav-btn ghost" onClick={toggleTheme}>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</button>
         {user ? (
-          <Link to="/settings">
-            <img className="topImg" src={PF + user.profilePic} alt="" />
-          </Link>
+          <></>
         ) : (
-          <ul className="topList">
-            <li className="topListItem">
-              <Link className="link" to="/login">
-                LOGIN
-              </Link>
-            </li>
-            <li className="topListItem">
-              <Link className="link" to="/register">
-                REGISTER
-              </Link>
-            </li>
-          </ul>
+          <div className="nav-actions">
+            <Link className="link" to="/login"><button className="nav-btn primary">Login</button></Link>
+            <Link className="link" to="/register"><button className="nav-btn">Register</button></Link>
+          </div>
         )}
         {/* <i className="topSearchIcon fas fa-search"></i> */}
         {user &&
           <>
-            <Link className="link m-2" to="/Uploadpodcast"><button className="btn btn-danger"> <i className="fa-solid fa-arrow-up-from-bracket"></i> Upload Pod </button></Link>
-            <Link className="link m-2" to="/upload"><button className="btn btn-danger"> <i className="fa-solid fa-arrow-up-from-bracket"></i> Uploads </button></Link>
-            <button className="btn btn-dark m-2 topListItem" onClick={handleLogout}>
+            <div className="nav-actions">
+              <Link className="link" to="/Uploadpodcast"><button className="nav-btn primary"> <i className="fa-solid fa-arrow-up-from-bracket nav-icon"></i> Upload Pod </button></Link>
+              <Link className="link" to="/upload"><button className="nav-btn primary"> <i className="fa-solid fa-arrow-up-from-bracket nav-icon"></i> Uploads </button></Link>
+              <Link to="/settings" aria-label="Settings">
+                <img className="topImg" src={PF + user.profilePic} alt="" />
+              </Link>
+              <button className="nav-btn signout" onClick={handleLogout}>
 
-              <i className="fa-solid fa-user-slash"></i>
+                <i className="fa-solid fa-user-slash nav-icon"></i>
 
 
-              "Sign-Off"
+                Sign Out
 
 
-            </button>
+              </button>
+            </div>
           </>
         }
       </div>

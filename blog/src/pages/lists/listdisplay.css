@@ -12,8 +12,11 @@
 }
 .title-container{
     text-align: center;
-    
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 .title{ 
     width: 50%;
@@ -82,8 +85,20 @@ z-index: 998;
 }
 
 .A-type, .A-test {
-    width: 20%;
-    justify-content: space-between;
+    width: auto;
+    justify-content: center;
     display: flex;
     align-items: center;
+    gap: 8px;
+}
+.A-type .dropdown-container,
+.A-test .dropdown-container,
+.A-type .TypeAheadDropDown,
+.A-test .TypeAheadDropDown {
+    width: min(var(--control-width), 90vw);
+}
+.A-type .btn, .A-test .btn {
+    height: var(--control-height);
+    min-width: 120px;
+    padding: 0 14px;
 }

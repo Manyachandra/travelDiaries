@@ -35,7 +35,9 @@ PORT=8000
 blog/.env
 ```
 PORT=3001
-REACT_APP_API_BASE_URL=http://localhost:8000
+# In development, the frontend uses setupProxy to call the API via /api and /images.
+# Leave REACT_APP_API_BASE_URL empty in dev; set it for production builds.
+REACT_APP_API_BASE_URL=
 REACT_APP_FIREBASE_API_KEY=...
 REACT_APP_FIREBASE_AUTH_DOMAIN=...
 REACT_APP_FIREBASE_PROJECT_ID=...
@@ -81,7 +83,7 @@ cd api && npm run seed
 - api/models/*: Mongoose models
 - blog/src: React app; pages and components
 - blog/src/firebase/index.js: Firebase compat SDK init (reads only REACT_APP_* env)
-- blog/src/setupProxy.js: Proxies `/api` and `/images` → `REACT_APP_API_BASE_URL`
+- blog/src/setupProxy.js: Proxies `/api` and `/images` → API host (uses `REACT_APP_API_BASE_URL` only in prod)
 
 ---
 
@@ -123,7 +125,7 @@ Environment/Ports:
 ## Troubleshooting
 - 500 on `/api/posts`: ensure title, desc, city, and username are provided
 - Upload stuck at 0%: enable Firebase Anonymous auth or relax Storage rules
-- Proxy errors: ensure `REACT_APP_API_BASE_URL` matches API host/port
+- Proxy errors: in dev, ensure both servers run (3001 ↔ 8000). In prod, set `REACT_APP_API_BASE_URL` to your API origin.
 
 ---
 

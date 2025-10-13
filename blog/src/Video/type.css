@@ -1,47 +1,58 @@
 .TypeAheadDropDown{
-    width: 20vw;
+  width: min(var(--control-width), 90vw);
+  min-height: var(--control-height);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  border-radius: 10px;
+  color: var(--text);
+  position: relative;
+}
   
- min-height: 36px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-   border-radius: 10px;
-
-    color: rgba(0, 0, 0, 0.73);
-   }
-    
-   .TypeAheadDropDown input{
-    width: 100%;
-   border-radius: 10px;
-
-    min-height: 36px;
-    border: none;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.73);
-    box-sizing: border-box;
-    outline: none;
-    
-   }
-   /* .TypeAheadDropDown ul::before{
-    content: '';
-   } */
-    
-   .TypeAheadDropDown ul{
-   list-style-type: none;
-   text-align: left;
-   margin: 0;
-   padding: 0;
-   border-top: 1px solid gray;
-   }
-    
-   .TypeAheadDropDown li{
-    padding: 10px 5px ;
-    cursor: pointer;
-   }
-    
-   .TypeAheadDropDown li:hover{
-    background: lightgray;
-    text-decoration: underline;
-   }
-    
-   
+.TypeAheadDropDown input{
+  width: 100%;
+  border-radius: 10px;
+  min-height: var(--control-height);
+  border: 1px solid var(--border);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  box-sizing: border-box;
+  outline: none;
+  padding: 10px 12px;
+}
+.TypeAheadDropDown input::placeholder{
+  color: var(--muted);
+}
+.TypeAheadDropDown input:focus{
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+  
+.TypeAheadDropDown ul{
+  list-style-type: none;
+  text-align: left;
+  margin: 6px 0 0 0;
+  padding: 6px 0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.2);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 20;
+}
+  
+.TypeAheadDropDown li{
+  padding: 10px 12px;
+  cursor: pointer;
+  color: var(--text);
+}
+  
+.TypeAheadDropDown li:hover{
+  background: var(--border);
+}

@@ -12,8 +12,31 @@
 }
 .title-container{
     text-align: center;
-    
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Align domain (CustomSelect) and city (TypeAhead) on one row */
+.filter{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 12px;
+}
+.filter .dropdown-container,
+.filter .TypeAheadDropDown{
+    width: min(var(--control-width), 90vw);
+}
+.filter .btn{
+    height: var(--control-height);
+    min-width: 120px;
+    padding: 0 14px;
 }
 .title{ 
     width: 50%;

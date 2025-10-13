@@ -39,29 +39,26 @@ const ListDisplayAudio = () => {
 
 
     useEffect(() => {
+        let isMounted = true;
+        const controller = new AbortController();
         const fetchVideo = async () => {
             try {
-                console.log("called")
-
-                const res = await axios.get(
-                    "/api/audio" +  search
-
-
-                );
-                const val = { ...res.data };
-
-                //check now
-                setVid(res.data);
-                console.log(Vid)
-
+                const res = await axios.get("/api/audio" +  search, { signal: controller.signal });
+                if (!isMounted) return;
+                setVid(Array.isArray(res.data) ? res.data : []);
             } catch (e) {
-                console.log(e)
-
+                if (e.name !== 'CanceledError' && e.name !== 'AbortError') {
+                    console.log(e)
+                }
             }
 
         };
         fetchVideo();
-    },[Vid],[search]);
+        return () => {
+            isMounted = false;
+            try { controller.abort(); } catch (_) {}
+        }
+    },[search]);
 
 
 
@@ -98,17 +95,9 @@ const ListDisplayAudio = () => {
 
             </div>
             <div className='mainDisplayWrapper' ref={listRef}>
-                {Vid.map((vid, indx) => {
-                    return (
-                        <>
-
-                            <HomeDisplay index={indx} url={vid.audio} img={vid.Poster} title={vid.title} desc={vid.desc}  city={vid.city} date={vid.createdAt} username={vid.username} />
-
-
-
-                        </>
-                    )
-                })}
+                {Vid.map((vid, indx) => (
+                    <HomeDisplay key={vid._id || `audio-${indx}`} index={indx} url={vid.audio} img={vid.Poster} title={vid.title} desc={vid.desc}  city={vid.city} date={vid.createdAt} username={vid.username} />
+                ))}
 
             </div>
             {/* <ArrowForwardIosOutlined className="ArrowSliderRight" onClick={() => handleClick("right")} /> */}

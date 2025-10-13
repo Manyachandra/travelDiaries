@@ -3,14 +3,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
   }
   
   .writeImg {
    
-    width: 60%;
+    width: min(900px, 95vw);
     height: 250px;
     border-radius: 10px;
     object-fit: cover;
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 24px rgba(0,0,0,.25);
+    margin-bottom: 12px;
   }
   
   .writeForm {
@@ -18,21 +24,28 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    gap: 12px;
+    width: min(900px, 95vw);
   }
   
   .writeFormGroup1 {
-    width: 60%;
+    width: 100%;
     display: flex;
     align-items: center;
     padding: 20px;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   .writeFormGroup2 {
-    width: 60%;
+    width: 100%;
     display: flex;
-    align-items: flex-end;
-    justify-content: start;
+    align-items: flex-start;
+    justify-content: flex-start;
   }
   
   .writeIcon {
@@ -49,34 +62,51 @@
   }
   
   .writeInput {
-    font-size: 30px;
-    border: none;
-    padding: 20px;
-    width: 70vw;
+    font-size: 24px;
+    padding: 14px 16px;
+    width: 100%;
     border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
   }
   
   .writeInput::placeholder {
-    color: rgb(92, 20, 20);
+    color: var(--muted);
     font-weight: 400;
   }
   
   .writeInput:focus {
-    outline-style: none;
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
   }
   
   .writeText {
-    width: 70vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 50vh;
     font-family: inherit;
-    font-size: 20px;
+    font-size: 18px;
     border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    resize: vertical;
   }
   
   .writeSubmit {
-   
- font-size: 1.3vw;
+   height: 44px;
+   min-width: 140px;
+   font-size: 16px;
+   background: var(--primary) !important;
+   border-color: var(--primary) !important;
+   color: #fff !important;
+   border-radius: 10px;
+   border: 1px solid var(--primary);
+   transition: filter .15s ease, transform .06s ease;
   }
+  .writeSubmit:hover { filter: brightness(1.05); }
+  .writeSubmit:active { transform: translateY(1px); }
   /* .btn-div{
    
     width: 100%;
@@ -85,11 +115,28 @@
     justify-content:end;
   } */
   .imgupload{
-    font-size: 2vw;
+    font-size: 22px;
     cursor: pointer;
-    padding: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    background: transparent;
   }
   .imgupload:hover{
-    background-color: white;
-    color:rgb(0, 174, 255)
+    background-color: var(--accent);
+    color:#0b0d10;
   }
+  .btn-div{
+    width: min(900px, 95vw);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+/* Ensure consistent control widths inside the write page toolbar */
+.btn-div > * {
+  width: min(var(--control-width), 90vw);
+}

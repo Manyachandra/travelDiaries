@@ -25,8 +25,19 @@ export const Home = ({ index, url, img, desc, title, date, city, username }) => 
             <div className="listItem" style={{ left: isHover && index * 380 - 50 }}
                 onMouseEnter={() => setisHoverd(true)} onMouseLeave={() => setisHoverd(true)}
             >
-
-                <img src={img}></img>
+                {(() => {
+                    const imageSrc = (() => {
+                        if (!img) return "/road.jpg";
+                        const value = String(img);
+                        const isAbsolute = /^https?:\/\//i.test(value) || /^data:|^blob:/i.test(value);
+                        if (isAbsolute) return value;
+                        if (value.startsWith("/images/")) return value;
+                        return `/images/${value.replace(/^\/+/, "")}`;
+                    })();
+                    return (
+                        <img src={imageSrc} alt="" onError={(e) => { e.currentTarget.src = "/road.jpg"; }} />
+                    );
+                })()}
                 {isHover && (
                     <div className="ishover">
 

@@ -6,6 +6,9 @@
   --primary: #7c3aed;
   --accent: #22d3ee;
   --border: #212838;
+  /* Unified control sizing */
+  --control-width: 360px;
+  --control-height: 40px;
 }
 
 [data-theme="light"] {
@@ -37,6 +40,8 @@ html, body, #root {
   font-size: 0.95rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 8px;
 }
 

@@ -75,3 +75,50 @@
     font-size: 14px;
     white-space: nowrap;
   }
+
+  /* New modern, equal-sized action buttons */
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-btn {
+    height: 40px;
+    min-width: 120px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: .2px;
+    transition: background .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .06s ease;
+  }
+  .nav-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    transform: translateY(-1px);
+  }
+  .nav-btn:active {
+    transform: translateY(0);
+  }
+  .nav-btn.primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .nav-btn.primary:hover {
+    filter: brightness(1.05);
+    color: #fff;
+  }
+  .nav-btn.ghost {
+    background: transparent;
+  }
+  .nav-icon {
+    margin-right: 8px;
+  }
+  .signout { font-size: 0.9rem; }

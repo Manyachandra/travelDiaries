@@ -6,8 +6,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import './theme.css';
 import axios from 'axios';
 
-// In production, send API requests to REACT_APP_API_BASE_URL
-if (process.env.REACT_APP_API_BASE_URL) {
+// Use proxy in development; only set baseURL for production builds
+if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_API_BASE_URL) {
   axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 }
 

@@ -7,9 +7,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 function Player(props) {
   const { search } = useLocation();
-  const myArray = search.slice(1);
-  const tr = myArray.split("~");
-  console.log(tr);
+  const raw = (search || '').slice(1);
+  const tr = raw.split("~");
+  const audioUrl = tr[0] || '';
+  const posterUrl = tr[1] || '';
+  const title = tr[2] || '';
      //new
     // state
     const [isPlaying, setIsPlaying] = useState(true);
@@ -57,10 +59,19 @@ function Player(props) {
 
 
     useEffect(() => {
-      const seconds = Math.floor(audioPlayer.current.duration);
-      setDuration(seconds);
-      progressBar.current.max = seconds;
-    }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState]);
+      const onLoaded = () => {
+        const seconds = Math.floor(audioPlayer.current.duration || 0);
+        setDuration(Number.isFinite(seconds) ? seconds : 0);
+        progressBar.current.max = Number.isFinite(seconds) ? seconds : 0;
+      };
+      const el = audioPlayer.current;
+      if (el) {
+        el.addEventListener('loadedmetadata', onLoaded);
+      }
+      return () => {
+        if (el) el.removeEventListener('loadedmetadata', onLoaded);
+      };
+    }, []);
   
     const calculateTime = (secs) => {
       const minutes = Math.floor(secs / 60);
@@ -70,17 +81,26 @@ function Player(props) {
       return `${returnedMinutes}:${returnedSeconds}`;
     }
 
-    const play = () => {
-      audioPlayer.current.play();
-      animationRef.current = requestAnimationFrame(whilePlaying)
+    const play = async () => {
+      try {
+        await audioPlayer.current.play();
+        animationRef.current = requestAnimationFrame(whilePlaying)
+      } catch (_) {
+        // Autoplay block or not supported
+        setIsPlaying(false);
+      }
     }
 
-    const togglePlayPause = () => {
+    const togglePlayPause = async () => {
         const prevValue = isPlaying;
         setIsPlaying(!prevValue);
         if (!prevValue) {
-          audioPlayer.current.play();
-          animationRef.current = requestAnimationFrame(whilePlaying)
+          try {
+            await audioPlayer.current.play();
+            animationRef.current = requestAnimationFrame(whilePlaying)
+          } catch (_) {
+            setIsPlaying(false);
+          }
         } else {
           audioPlayer.current.pause();
           cancelAnimationFrame(animationRef.current);
@@ -136,12 +156,13 @@ function Player(props) {
     }
 }
 
-    return (
+  return (
+        <div className={styles.container}>
         <div className={styles.cplayer}>
             <h4>Playing now</h4>
-            <Details img={tr[1]} title={tr[2]} />
+            <Details img={posterUrl} title={title} />
            
-            <audio ref={audioPlayer} src={myArray} preload="metadata"></audio>
+            <audio ref={audioPlayer} src={audioUrl} preload="metadata"></audio>
         {/* current time */}
         <div className={styles.barss}>
          <div className={styles.currentTime}>{calculateTime(currentTime)}</div>
@@ -180,6 +201,7 @@ function Player(props) {
             </button>
         </div>
             {/* <p>Next up: <span>{props.songs[nextSongIndex].title} by {props.songs[nextSongIndex].artist}</span></p> */}
+        </div>
         </div>
     )
 }

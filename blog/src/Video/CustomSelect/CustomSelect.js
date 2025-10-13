@@ -28,7 +28,7 @@ export default function CustomSelect ({ value, title, options, onChange }) {
           applyChange(item.id)
           // console.log(item.label)
           }} className="dropdown-item" key={item.id}>
-          <img src={item.logo}/>
+          <img src={item.logo} alt=""/>
           {item.label}
         </div>
       )}

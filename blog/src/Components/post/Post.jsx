@@ -5,7 +5,20 @@ export default function Post({ post }) {
   const PF = "/images/";
   return (
     <div className="post">
-      {post.photo && <img className="postImg" src={PF + post.photo} alt="" />}
+      {(() => {
+        const value = post?.photo;
+        const imageSrc = (() => {
+          if (!value) return "/road.jpg";
+          const str = String(value);
+          const isAbsolute = /^https?:\/\//i.test(str) || /^data:|^blob:/i.test(str);
+          if (isAbsolute) return str;
+          if (str.startsWith("/images/")) return str;
+          return `${PF}${str.replace(/^\/+/, "")}`;
+        })();
+        return (
+          <img className="postImg" src={imageSrc} alt="" onError={(e) => { e.currentTarget.src = "/road.jpg"; }} />
+        );
+      })()}
       <div className="postInfo">
         <div className="postCats">
           {post.categories.map((c, idx) => (
