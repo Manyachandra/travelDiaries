@@ -10,6 +10,8 @@ export default function Settings() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const { user, dispatch } = useContext(Context);
   const PF = "/images/"
@@ -17,6 +19,9 @@ export default function Settings() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch({ type: "UPDATE_START" });
+    setIsSubmitting(true);
+    setSuccess(false);
+    setErrorMsg("");
     const updatedUser = {
       userId: user._id,
       username:user.username,
@@ -46,7 +51,10 @@ export default function Settings() {
     } catch (err) {
       console.log(updatedUser);
       console.log(err);
+      setErrorMsg("Update failed. Please try again.");
       dispatch({ type: "UPDATE_FAILURE" });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -90,15 +98,30 @@ export default function Settings() {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="settingsSubmit" type="submit">
-            Update
+          <button className="settingsSubmit" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Updating..." : "Update"}
           </button>
           {success && (
-            <span
-              style={{ color: "white", textAlign: "center", marginTop: "20px" }}
-            >
-              Profile has been updated...
-            </span>
+            <div style={{
+              color: "#16a34a",
+              background: "rgba(22,163,74,0.12)",
+              border: "1px solid rgba(22,163,74,0.35)",
+              borderRadius: 10,
+              padding: 10,
+              marginTop: 16,
+              textAlign: "center"
+            }}>Profile has been updated.</div>
+          )}
+          {!!errorMsg && (
+            <div style={{
+              color: "#ef4444",
+              background: "rgba(239,68,68,0.12)",
+              border: "1px solid rgba(239,68,68,0.35)",
+              borderRadius: 10,
+              padding: 10,
+              marginTop: 16,
+              textAlign: "center"
+            }}>{errorMsg}</div>
           )}
         </form>
       </div>

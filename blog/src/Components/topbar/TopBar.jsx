@@ -7,7 +7,8 @@ import "./topbar.css";
 export default function TopBar() {
   const { user, dispatch } = useContext(Context);
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const PF = "/images/"
+  const apiBase = process.env.REACT_APP_API_BASE_URL || "";
+  const PF = `${apiBase.replace(/\/+$/, "")}/images/`;
 
   const handleLogout = () => {
     dispatch({ type: "LOGOUT" });
