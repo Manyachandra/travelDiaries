@@ -1,15 +1,14 @@
 var errors = {
 
-    //tenants error
-    // tenant_name_taken: [400,"Tenant name already taken"]
-    
-    //server error
-    // server_error: [500, "Some internal server error"],
-   
-    
-    //landlord error
-    // landlord_name_taken: [400,"Landlord name already taken"]
-    701: "Landlord name already taken"
+    // user errors
+    // username_taken: [400, "Username already taken"],
+
+    // server errors
+    // server_error: [500, "Internal server error"],
+
+    // content errors
+    // category_name_taken: [400, "Category name already taken"]
+    701: "Username already taken"
     
     
     
