@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+# Travel Diaries
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Full‑stack MERN application for blogging, videos, and podcasts. The repo contains:
 
-## Available Scripts
+- `api`: Node.js/Express REST API with MongoDB (Mongoose) and file uploads (Multer)
+- `blog`: React frontend (Create React App) with Axios, Firebase Storage uploads for media, and client auth context
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- Auth: register/login, profile update
+- Posts: create/read/update/delete with categories and city filter
+- Videos/Podcasts: upload media to Firebase Storage, store URLs in MongoDB
+- Images: served from API `/images` or uploaded via Firebase (thumbnails)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Quick Start
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Prereqs: Node 18+ and npm. MongoDB Atlas (or local), Firebase project with Storage enabled.
 
-### `npm test`
+### 1) Install
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+cd api && npm install
+cd ../blog && npm install
+```
 
-### `npm run build`
+### 2) Environment
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Create the following files locally (do not commit):
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `api/.env`
+  ```bash
+  MONGO_URL=your-mongodb-atlas-uri
+  PORT=8000
+  SECRET_KEY=your-secret-key-change-in-production
+  ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- `blog/.env`
+  ```bash
+  PORT=3001
+  REACT_APP_API_BASE_URL=
+  REACT_APP_FIREBASE_API_KEY=your-firebase-api-key
+  REACT_APP_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+  REACT_APP_FIREBASE_PROJECT_ID=your-project-id
+  REACT_APP_FIREBASE_STORAGE_BUCKET=<project-id>.appspot.com
+  REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+  REACT_APP_FIREBASE_APP_ID=your-app-id
+  REACT_APP_FIREBASE_MEASUREMENT_ID=your-measurement-id
+  ```
 
-### `npm run eject`
+### 3) Run
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+# API
+cd api && npm start
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Frontend
+cd blog && npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Open `http://localhost:3001`.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 4) Seed demo data (optional)
 
-## Learn More
+```bash
+cd api && npm run seed
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Project Structure
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `api/index.js`: Express app bootstrap; Mongo connection; routes
+- `api/routes/*`: auth, users, posts, categories, video, podcast
+- `api/models/*`: Mongoose models
+- `api/middleware/*`: auth, error handling
+- `blog/src`: React app; pages and components
+- `blog/src/firebase/index.js`: Firebase compat SDK init (reads only `REACT_APP_*` env)
 
-### Code Splitting
+## Environment/Ports
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- API reads `PORT` and `SECRET_KEY` from `api/.env`
+- Frontend reads `PORT` from `blog/.env`
+- Proxy target set via `REACT_APP_API_BASE_URL`
 
-### Analyzing the Bundle Size
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT
